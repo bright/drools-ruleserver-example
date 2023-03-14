@@ -1,0 +1,59 @@
+
+package com.example.model;
+
+unit AppUnit;
+
+import com.example.model.Education;
+
+rule "will execute per each Measurement having ID color"
+when
+	$a: /accounts[ age < 18 ]
+then
+	$a.addScore(-100);
+end
+
+
+rule "Middle education will give +75 to score"
+when 
+	$a: /accounts[ education == Education.HIGH ]
+then
+	$a.addScore(75);
+end
+
+
+rule "Higher education will give +100 to score"
+when 
+	$a: /accounts[ education == Education.HIGH ]
+then
+	$a.addScore(100);
+end
+
+
+rule "Income +1000 will add +100"
+when 
+	$a: /accounts[ income > 1000 ]
+then
+	$a.addScore(100);
+end
+
+
+rule "Sub -1000 when on Sanction list as CRIME, MILITARY, DIPLOMATIC"
+when 
+	$s: /sanctions[ sanctionType in  ( SanctionType.CRIME, SanctionType.MILITARY, SanctionType.DIPLOMATIC ) ]
+	$a: /accounts[ name == $s.name ]
+then
+	$a.addScore(-1000);
+end
+
+rule "Sub -500 when on Sanction list as PEP"
+when 
+	$s: /sanctions[ sanctionType ==  SanctionType.PEP  ]
+	$a: /accounts[ name == $s.name ]
+then
+	$a.addScore(-500);
+end
+
+
+query FindAccount
+    $m: /accounts[ age > 18 ]
+end
